@@ -1,5 +1,5 @@
 import axios from 'axios'
 
-axios.defaults.baseURL = 'https://bahor-foods-menu-server.vercel.app'
+axios.defaults.baseURL = 'https://bahor-foods-menu-server.onrender.com'
 
 export default axios
