@@ -1,14 +1,20 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-const Login = ({ auth, setAuth }) => {
+const Login = ({ setAuth }) => {
 	const [username, setUsername] = useState('')
 	const [password, setPassword] = useState('')
+	const navigate = useNavigate()
 
 	const handleSubmit = async e => {
 		e.preventDefault()
 		try {
 			if (username === 'shohruz' && password === '12345678') {
-				setAuth(!auth)
+				setAuth(true)
+				localStorage.setItem('auth', 'true')
+				navigate('/')
+			} else {
+				alert('Login yoki parol xato')
 			}
 		} catch (error) {
 			alert('Login yoki parol xato')

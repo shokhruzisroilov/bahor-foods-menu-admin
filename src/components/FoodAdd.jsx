@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 import { categories } from '../utils/categories'
 import FoodsService from '../services/foodsService'
 
@@ -24,6 +25,24 @@ const FoodAdd = ({ isOpen, onClose, onSave, initialFood }) => {
 			setCategory('')
 		}
 	}, [isOpen, initialFood])
+
+	const handleImageUpload = async e => {
+		const file = e.target.files[0]
+		const formData = new FormData()
+		formData.append('file', file)
+		formData.append('upload_preset', 'tedgqry3') // Sizning upload preset nomi
+
+		try {
+			const res = await axios.post(
+				'https://api.cloudinary.com/v1_1/dj3epjudt/image/upload',
+				formData
+			)
+			setImage(res.data.secure_url)
+		} catch (error) {
+			alert('Rasm yuklashda xatolik: ' + error.message)
+			console.log(error.response?.data)
+		}
+	}
 
 	const handleSave = async () => {
 		const newFoodItem = {
@@ -73,13 +92,21 @@ const FoodAdd = ({ isOpen, onClose, onSave, initialFood }) => {
 						</select>
 					</div>
 					<div className='mb-4'>
-						<label className='block text-sm font-medium mb-2'>Rasm URL</label>
+						<label className='block text-sm font-medium mb-2'>
+							Rasm yuklash
+						</label>
 						<input
-							type='text'
-							value={image}
-							onChange={e => setImage(e.target.value)}
+							type='file'
+							onChange={handleImageUpload}
 							className='w-full border rounded-lg p-2'
 						/>
+						{image && (
+							<img
+								src={image}
+								alt='Food'
+								className='mt-4 w-32 h-32 object-cover'
+							/>
+						)}
 					</div>
 					<div className='mb-4'>
 						<label className='block text-sm font-medium mb-2'>Nom</label>
