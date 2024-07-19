@@ -9,7 +9,7 @@ const Login = ({ setAuth }) => {
 	const handleSubmit = async e => {
 		e.preventDefault()
 		try {
-			if (username === 'shohruz' && password === '12345678') {
+			if (username === 'Bahor' && password === 'Bahor0888') {
 				setAuth(true)
 				localStorage.setItem('auth', 'true')
 				navigate('/')

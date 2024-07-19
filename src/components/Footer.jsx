@@ -10,9 +10,9 @@ const Footer = () => {
 				</h1>
 
 				<p className='text-[14px]'>
-					Manzil: 123 Restoran Ko'chasi, Karshi, O'zbekiston
+					Manzil: Kаманди махалла бахор чойхона, Karshi
 				</p>
-				<p className='text-[14px]'>Telefon: +998 (90) 123-45-67</p>
+				<p className='text-[14px]'>Telefon: +998 (33) 961-08-88</p>
 			</div>
 		</footer>
 	)
