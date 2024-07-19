@@ -10,6 +10,7 @@ const FoodEdit = ({ isOpen, onClose, onSave, initialFood, getFoods }) => {
 	const [category, setCategory] = useState('')
 	const [subcategory, setSubcategory] = useState('')
 	const [isEditing, setIsEditing] = useState(false)
+	const [errors, setErrors] = useState({})
 
 	useEffect(() => {
 		if (isOpen && initialFood) {
@@ -47,13 +48,24 @@ const FoodEdit = ({ isOpen, onClose, onSave, initialFood, getFoods }) => {
 		}
 	}
 
+	const validateForm = () => {
+		let formErrors = {}
+		if ((category === 'blude1' || category === 'blude2') && !subcategory) {
+			formErrors.subcategory = 'Подкатегория танланиши шарт'
+		}
+		setErrors(formErrors)
+		return Object.keys(formErrors).length === 0
+	}
+
 	const handleSave = async () => {
+		if (!validateForm()) return
+
 		const updatedFoodItem = {
 			img,
 			name,
 			price,
 			category,
-			subcategory,
+			subcategory: subcategory || '', // Allow subcategory to be empty
 		}
 
 		try {
@@ -106,7 +118,9 @@ const FoodEdit = ({ isOpen, onClose, onSave, initialFood, getFoods }) => {
 							<select
 								value={subcategory}
 								onChange={e => setSubcategory(e.target.value)}
-								className='w-full border rounded-lg p-2'
+								className={`w-full border rounded-lg p-2 ${
+									errors.subcategory ? 'border-red-500' : ''
+								}`}
 							>
 								<option value=''>Подкатегория танланг</option>
 								{subcategories.map(sub => (
@@ -115,6 +129,9 @@ const FoodEdit = ({ isOpen, onClose, onSave, initialFood, getFoods }) => {
 									</option>
 								))}
 							</select>
+							{errors.subcategory && (
+								<p className='text-red-500 text-sm'>{errors.subcategory}</p>
+							)}
 						</div>
 					)}
 					<div className='mb-4'>

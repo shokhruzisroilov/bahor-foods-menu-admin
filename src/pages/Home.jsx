@@ -79,7 +79,7 @@ const Home = () => {
 					className='bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 fixed bottom-4 right-4 z-50'
 					onClick={() => setModalOpen(true)}
 				>
-					Қўшиш
+					+
 				</button>
 			</div>
 			{categories.map(category => (

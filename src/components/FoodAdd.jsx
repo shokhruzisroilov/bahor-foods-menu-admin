@@ -10,6 +10,7 @@ const FoodAdd = ({ isOpen, onClose, onSave, initialFood }) => {
 	const [category, setCategory] = useState('')
 	const [subcategory, setSubcategory] = useState('')
 	const [isEditing, setIsEditing] = useState(false)
+	const [errors, setErrors] = useState({})
 
 	useEffect(() => {
 		if (isOpen && initialFood) {
@@ -47,13 +48,24 @@ const FoodAdd = ({ isOpen, onClose, onSave, initialFood }) => {
 		}
 	}
 
+	const validateForm = () => {
+		let formErrors = {}
+		if ((category === 'blude1' || category === 'blude2') && !subcategory) {
+			formErrors.subcategory = 'Ошхона танланиши шарт'
+		}
+		setErrors(formErrors)
+		return Object.keys(formErrors).length === 0
+	}
+
 	const handleSave = async () => {
+		if (!validateForm()) return
+
 		const newFoodItem = {
 			img: image,
 			name,
 			price,
 			category,
-			subcategory,
+			subcategory: subcategory || '', // Allow subcategory to be empty
 		}
 
 		try {
@@ -109,7 +121,9 @@ const FoodAdd = ({ isOpen, onClose, onSave, initialFood }) => {
 							<select
 								value={subcategory}
 								onChange={e => setSubcategory(e.target.value)}
-								className='w-full border rounded-lg p-2'
+								className={`w-full border rounded-lg p-2 ${
+									errors.subcategory ? 'border-red-500' : ''
+								}`}
 							>
 								<option value=''>Ошхонани танланг</option>
 								{subcategories.map(sub => (
@@ -118,6 +132,9 @@ const FoodAdd = ({ isOpen, onClose, onSave, initialFood }) => {
 									</option>
 								))}
 							</select>
+							{errors.subcategory && (
+								<p className='text-red-500 text-sm'>{errors.subcategory}</p>
+							)}
 						</div>
 					)}
 					<div className='mb-4'>
@@ -159,7 +176,7 @@ const FoodAdd = ({ isOpen, onClose, onSave, initialFood }) => {
 					<div className='flex justify-end'>
 						<button
 							type='button'
-							onClick={handleSave}
+							onClick={handleSave} // Directly calling handleSave
 							className='bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 mr-2'
 						>
 							Сақлаш
