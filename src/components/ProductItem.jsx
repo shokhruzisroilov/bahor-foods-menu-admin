@@ -24,13 +24,13 @@ const ProductItem = ({ filteredFood, onDelete, onEdit }) => {
 					className='bg-blue-500 text-white py-1 w-full rounded hover:bg-blue-600'
 					onClick={() => onEdit(filteredFood)}
 				>
-					Tahrirlash
+					Таҳрирлаш
 				</button>
 				<button
 					className='bg-red-500 text-white py-1 w-full rounded hover:bg-red-600'
 					onClick={() => onDelete(filteredFood._id)}
 				>
-					O'chirish
+					Ўчириш
 				</button>
 			</div>
 		</div>

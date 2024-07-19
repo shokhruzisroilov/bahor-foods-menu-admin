@@ -8,21 +8,24 @@ const FoodEdit = ({ isOpen, onClose, onSave, initialFood, getFoods }) => {
 	const [name, setName] = useState('')
 	const [price, setPrice] = useState('')
 	const [category, setCategory] = useState('')
+	const [subcategory, setSubcategory] = useState('')
 	const [isEditing, setIsEditing] = useState(false)
 
 	useEffect(() => {
 		if (isOpen && initialFood) {
 			setIsEditing(true)
-			setImg(initialFood.img || '') // Use 'img' for the image URL
+			setImg(initialFood.img || '')
 			setName(initialFood.name || '')
 			setPrice(initialFood.price || '')
 			setCategory(initialFood.category || '')
+			setSubcategory(initialFood.subcategory || '')
 		} else {
 			setIsEditing(false)
-			setImg('') // Clear image URL
+			setImg('')
 			setName('')
 			setPrice('')
 			setCategory('')
+			setSubcategory('')
 		}
 	}, [isOpen, initialFood])
 
@@ -39,7 +42,7 @@ const FoodEdit = ({ isOpen, onClose, onSave, initialFood, getFoods }) => {
 			)
 			setImg(res.data.secure_url)
 		} catch (error) {
-			alert('Image upload error: ' + error.message)
+			alert('Рассм юклашда хатолик: ' + error.message)
 			console.log(error.response?.data)
 		}
 	}
@@ -50,17 +53,26 @@ const FoodEdit = ({ isOpen, onClose, onSave, initialFood, getFoods }) => {
 			name,
 			price,
 			category,
+			subcategory,
 		}
 
 		try {
 			await FoodsService.updateFood(initialFood._id, updatedFoodItem)
-			onSave() // Notify parent component of the successful update
-			getFoods() // Refresh the list of foods
+			onSave()
+			getFoods()
 		} catch (error) {
-			alert(error.response?.data || 'Error updating food')
+			alert(error.response?.data || 'Тамақни янгилашда хатолик')
 			console.log(error.response?.data)
 		}
 	}
+
+	const handleCategoryChange = e => {
+		setCategory(e.target.value)
+		setSubcategory('') // Reset subcategory when category changes
+	}
+
+	const subcategories =
+		categories.find(cat => cat.id === category)?.subcategories || []
 
 	if (!isOpen) return null
 
@@ -68,17 +80,17 @@ const FoodEdit = ({ isOpen, onClose, onSave, initialFood, getFoods }) => {
 		<div className='fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50 p-5'>
 			<div className='bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl h-full max-h-[calc(100vh-40px)] overflow-auto'>
 				<h2 className='text-2xl font-bold mb-4'>
-					{isEditing ? 'Edit Food' : 'Add New Food'}
+					{isEditing ? 'Тамақни таҳрирлаш' : 'Янги тамақ қўшиш'}
 				</h2>
 				<form>
 					<div className='mb-4'>
-						<label className='block text-sm font-medium mb-2'>Category</label>
+						<label className='block text-sm font-medium mb-2'>Категория</label>
 						<select
 							value={category}
-							onChange={e => setCategory(e.target.value)}
+							onChange={handleCategoryChange}
 							className='w-full border rounded-lg p-2'
 						>
-							<option value=''>Select Category</option>
+							<option value=''>Категория танланг</option>
 							{categories.map(cat => (
 								<option key={cat.id} value={cat.id}>
 									{cat.name}
@@ -86,9 +98,28 @@ const FoodEdit = ({ isOpen, onClose, onSave, initialFood, getFoods }) => {
 							))}
 						</select>
 					</div>
+					{category && subcategories.length > 0 && (
+						<div className='mb-4'>
+							<label className='block text-sm font-medium mb-2'>
+								Подкатегория
+							</label>
+							<select
+								value={subcategory}
+								onChange={e => setSubcategory(e.target.value)}
+								className='w-full border rounded-lg p-2'
+							>
+								<option value=''>Подкатегория танланг</option>
+								{subcategories.map(sub => (
+									<option key={sub.id} value={sub.id}>
+										{sub.name}
+									</option>
+								))}
+							</select>
+						</div>
+					)}
 					<div className='mb-4'>
 						<label className='block text-sm font-medium mb-2'>
-							Upload Image
+							Рассм юклаш
 						</label>
 						<input
 							type='file'
@@ -96,17 +127,15 @@ const FoodEdit = ({ isOpen, onClose, onSave, initialFood, getFoods }) => {
 							className='w-full border rounded-lg p-2'
 						/>
 						{img && (
-							<div className='mt-2'>
-								<img
-									src={img}
-									alt='Food preview'
-									className='w-full h-auto max-h-64 object-cover border rounded-lg'
-								/>
-							</div>
+							<img
+								src={img}
+								alt='Food'
+								className='mt-4 w-32 h-32 object-cover'
+							/>
 						)}
 					</div>
 					<div className='mb-4'>
-						<label className='block text-sm font-medium mb-2'>Name</label>
+						<label className='block text-sm font-medium mb-2'>Номи</label>
 						<input
 							type='text'
 							value={name}
@@ -115,7 +144,7 @@ const FoodEdit = ({ isOpen, onClose, onSave, initialFood, getFoods }) => {
 						/>
 					</div>
 					<div className='mb-4'>
-						<label className='block text-sm font-medium mb-2'>Price</label>
+						<label className='block text-sm font-medium mb-2'>Нархи</label>
 						<input
 							type='text'
 							value={price}
@@ -130,14 +159,14 @@ const FoodEdit = ({ isOpen, onClose, onSave, initialFood, getFoods }) => {
 							onClick={handleSave}
 							className='bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 mr-2'
 						>
-							Save
+							Сақлаш
 						</button>
 						<button
 							type='button'
 							onClick={onClose}
 							className='bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600'
 						>
-							Cancel
+							Бекор қилиш
 						</button>
 					</div>
 				</form>

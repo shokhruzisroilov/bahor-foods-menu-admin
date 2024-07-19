@@ -69,7 +69,7 @@ const App = () => {
 						onClick={handleLogout}
 						className='fixed bottom-4 left-2 bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600'
 					>
-						Chiqish
+						Чиқиш
 					</button>
 				</div>
 			) : (

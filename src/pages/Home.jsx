@@ -19,14 +19,15 @@ const Home = () => {
 			if (Array.isArray(data)) {
 				setFoodsData(data)
 			} else {
-				console.error('Data is not in expected format:', data)
+				console.error('Маълумот кутилган форматда эмас:', data)
 			}
 		} catch (err) {
-			setError(err.message || 'Failed to fetch foods')
+			setError(err.message || 'Таомларни олишда хатолик')
 		} finally {
 			setLoading(false)
 		}
 	}
+
 	useEffect(() => {
 		getFoods()
 	}, [])
@@ -46,7 +47,7 @@ const Home = () => {
 			await FoodsService.deleteFood(id)
 			setFoodsData(prevFoods => prevFoods.filter(food => food._id !== id))
 		} catch (err) {
-			setError(err.message || 'Failed to delete food')
+			setError(err.message || 'Таомни ўчиришда хатолик')
 		}
 	}
 
@@ -58,7 +59,7 @@ const Home = () => {
 	if (loading) {
 		return (
 			<div className='min-h-screen flex items-center justify-center'>
-				Loading...
+				Кутинг...
 			</div>
 		)
 	}
@@ -66,7 +67,7 @@ const Home = () => {
 	if (error) {
 		return (
 			<div className='min-h-screen flex items-center justify-center'>
-				Error: {error}
+				Хатолик: {error}
 			</div>
 		)
 	}
@@ -78,7 +79,7 @@ const Home = () => {
 					className='bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600 fixed bottom-4 right-4 z-50'
 					onClick={() => setModalOpen(true)}
 				>
-					+
+					Қўшиш
 				</button>
 			</div>
 			{categories.map(category => (
@@ -86,18 +87,44 @@ const Home = () => {
 					<h2 className='pb-8 px-4 text-[#2b191] font-cormorant font-[800] text-2xl'>
 						{category.name}
 					</h2>
-					<div className='foods-grid grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 px-4'>
-						{foodsData
-							.filter(food => food?.category === category.id)
-							.map(filteredFood => (
-								<ProductItem
-									key={filteredFood._id}
-									filteredFood={filteredFood}
-									onEdit={handleEdit}
-									onDelete={handleDelete}
-								/>
-							))}
-					</div>
+					{category.subcategories ? (
+						category.subcategories.map(subcategory => (
+							<div key={subcategory.id} className='pt-4'>
+								<h3 className='pb-4 px-4 text-[#2b191] font-cormorant font-[700] text-xl'>
+									{subcategory.name}
+								</h3>
+								<div className='foods-grid grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 px-4'>
+									{foodsData
+										.filter(
+											food =>
+												food.category === category.id &&
+												food.subcategory === subcategory.id
+										)
+										.map(filteredFood => (
+											<ProductItem
+												key={filteredFood._id}
+												filteredFood={filteredFood}
+												onEdit={handleEdit}
+												onDelete={handleDelete}
+											/>
+										))}
+								</div>
+							</div>
+						))
+					) : (
+						<div className='foods-grid grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 px-4'>
+							{foodsData
+								.filter(food => food.category === category.id)
+								.map(filteredFood => (
+									<ProductItem
+										key={filteredFood._id}
+										filteredFood={filteredFood}
+										onEdit={handleEdit}
+										onDelete={handleDelete}
+									/>
+								))}
+						</div>
+					)}
 				</div>
 			))}
 			<FoodAdd
